@@ -66,8 +66,8 @@ namespace TFG_Salty.Server.Services.PaymentService
                 },
                 LineItems = lineItems,
                 Mode = "payment",
-                SuccessUrl = "https://localhost:7173/order-success",
-                CancelUrl = "https://localhost:7173/cart"
+                SuccessUrl = "https://localhost:5001/order-success",
+                CancelUrl = "https://localhost:5001/cart"
             };
 
             var service = new SessionService();

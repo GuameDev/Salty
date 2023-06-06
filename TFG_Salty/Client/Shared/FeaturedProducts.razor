@@ -2,45 +2,109 @@
 @implements IDisposable
 
 
-<MudText Typo="Typo.h2">
-    Productos destacados
-</MudText>
 
 @if (productService.Products == null || productService.Products.Count == 0)
 {
-    <span> @productService.Message</span>
+    <MudText> @productService.Message</MudText>
 }
 else
 {
-    <div class="container">
+
+    <MudContainer Class="mt-16">
+        <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Productos Destacados</MudText>
+        <MudText Align="Align.Center">¡Los productos mas interesantes de la semana, Solo en Salty!</MudText>
+
+
+
+        <MudGrid Class="mt-8">
+
+            @foreach (var product in productService.Products)
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Elevation="25" Class="rounded-lg pb-4">
+                        <MudCardHeader>
+                            <MudText Typo="Typo.h5" Align="Align.Center">@product.Title</MudText>
+                        </MudCardHeader>
+                        <MudCardContent Class="align-content-center">
+                            <MudItem xs="12" sm="6" md="4">
+                                <a href="/product/@product.Id">
+                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                    {
+                                        <MudImage Elevation="25" Width="200" Fluid=true Class="rounded-lg" Src="@product.ImageUrl" alt="@product.Title" />
+                                    }
+                                    else if (product.Images.Count > 0)
+                                    {
+                                        <MudImage Elevation="25" Class="rounded-lg" Src="@product.Images[0].Data" alt="@product.Title" />
+                                    }
+                                </a>
+                            </MudItem>
+                            <div class="d-flex justify-center">
+                                
+                                <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">Precio</MudText>
+                                <MudText Typo="Typo.h3">@product.Variants.Min(variant => variant.Price)</MudText>
+                            </div>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            }
+
+        </MudGrid>
+    </MudContainer>
+
+
+    <MudGrid>
+
         @foreach (var product in productService.Products)
         {
-            @if (product.Featured)
-            {
-                <div class="featured-product">
 
-                    <div>
-                        <a href="product/@product.Id">
-                            @if (!string.IsNullOrEmpty(product.ImageUrl))
-                            {
-                                <img src="@product.ImageUrl" />
-                            }
-                            else if (product.Images.Count > 0)
-                            {
-                                <img src="@product.Images[0].Data" />
-                            }
 
-                        </a>
-                    </div>
-                    <h4> <a href="product/@product.Id">@product.Title</a></h4>
-                    @if (product.Variants != null && product.Variants.Count > 0)
-                    {
-                        <h5 class="price"> @product.Variants[0].Price€</h5>
-                    }
-                </div>
-            }
+
+            <MudItem xs="3">
+
+                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+
+
+                    <MudCard>
+                        <MudCardHeader>
+                            <MudPaper>
+                                <MudItem>
+                                    <a href="/product/@product.Id">
+                                        <MudText Typo="Typo.h4"> @product.Title</MudText>
+                                    </a>
+                                </MudItem>
+                            </MudPaper>
+                        </MudCardHeader>
+
+                        <MudCardContent>
+
+                            <MudPaper>
+                                <MudItem>
+                                    <a href="/product/@product.Id">
+                                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                        {
+                                            <MudImage Elevation="25" Width="20" Fluid=true Class="rounded-lg" Src="@product.ImageUrl" alt="@product.Title" />
+                                        }
+                                        else if (product.Images.Count > 0)
+                                        {
+                                            <MudImage Elevation="25" Class="rounded-lg" Src="@product.Images[0].Data" alt="@product.Title" />
+                                        }
+                                    </a>
+                                </MudItem>
+                                <MudItem>
+                                    @if (product.Variants != null && product.Variants.Count > 0)
+                                    {
+                                        <MudText Typo="Typo.h5" class="price"> @product.Variants[0].Price€</MudText>
+                                    }
+                                </MudItem>
+                            </MudPaper>
+                        </MudCardContent>
+                    </MudCard>
+                </MudPaper>
+            </MudItem>
+
         }
-    </div>
+    </MudGrid>
+
 }
 
 @code {

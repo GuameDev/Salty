@@ -35,7 +35,9 @@ else
                         <MudItem>
 
                             <MudText Typo="Typo.h5">@product.ProductType</MudText>
-                            <MudNumericField Class="d-flex justify-start flex-grow-1 gap-4" @bind-Value="@product.Quantity" Label="Cantidad" Variant="Variant.Text" Min="1" Max="10"></MudNumericField>
+                            @*<MudNumericField Class="d-flex justify-start flex-grow-1 gap-4" @bind-Value="@product.Quantity" onchange="@((ChangeEventArgs e) => UpdateQuantity(e,product))" Label="Cantidad" Variant="Variant.Text" Min="1" Max="10"></MudNumericField>*@
+                            <MudText Typo="Typo.subtitle2"> Cantidad</MudText>
+                            <input  type="number" value=@product.Quantity @onchange="@((ChangeEventArgs e) => UpdateQuantity(e,product))" min="1" style="border-radius: 30px"/>
                         </MudItem>
 
                         <MudItem>
