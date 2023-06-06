@@ -1,7 +1,42 @@
 ﻿@page "/"
+@page "/search/{searchText}/{page:int}"
+@page "/{categoryUrl}"
+@inject IProductService ProductService
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Salty</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
-<MudText Class="mb-8">Welcome to your new app, powered by MudBlazor!</MudText>
-<MudAlert Severity="Severity.Normal">You can find documentation and examples on our website here: <MudLink Href="https://mudblazor.com" Typo="Typo.body2" Color="Color.Inherit"><b>www.mudblazor.com</b></MudLink></MudAlert>
+
+@if (SearchText is null && CategoryUrl is null)
+{
+    <FeaturedProducts />
+}
+else
+{
+    <ProductListMud />
+}
+
+
+@code {
+    [Parameter]
+    public string? CategoryUrl { get; set; }
+
+    [Parameter]
+    public string? SearchText { get; set; }
+    [Parameter]
+    public int Page { get; set; } = 1;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (SearchText != null)
+        {
+            await ProductService.SearchProductsAsync(SearchText,Page);
+        }
+        else
+        {
+            await ProductService.GetProductsAsync(CategoryUrl);
+        }
+
+    }
+
+}

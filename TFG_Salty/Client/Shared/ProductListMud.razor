@@ -1,0 +1,87 @@
+﻿<!-- Inyección de las dependencias necesarias para realizar una request HTTP desde el cliente-->
+@inject IProductService ProductService
+@implements IDisposable
+
+@if (ProductService.Products == null || ProductService.Products.Count == 0)
+{
+    <MudText Typo="Typo.h3">@ProductService.Message</MudText>
+}
+else
+{
+
+
+    <MudGrid Spacing="2" Justify="Justify.Center">
+
+
+        @foreach (var product in ProductService.Products)
+        {
+            <MudItem xs =8>
+                <MudCard>
+                    <MudCardHeader>
+                        <MudPaper>
+                            <MudItem>
+                                <a href="/product/@product.Id">
+                                    <MudText Typo="Typo.h4"> @product.Title</MudText>
+                                </a>
+                            </MudItem>
+                        </MudPaper>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudListItem>
+                            <MudItem>
+                                <a href="/product/@product.Id">
+                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                    {
+                                        <MudImage Elevation="25" Width="200" Fluid=true Class="rounded-lg" Src="@product.ImageUrl" alt="@product.Title" />
+                                    }
+                                    else if (product.Images.Count > 0)
+                                    {
+                                        <MudImage Elevation="25" Class="rounded-lg" Src="@product.Images[0].Data" alt="@product.Title" />
+                                    }
+                                </a>
+                            </MudItem>
+                        </MudListItem>
+                        <MudItem>
+                            <MudText>@product.Description</MudText>
+                            <MudText Typo="Typo.h5" Color="Color.Success">
+                                @GetPriceText(product)
+                            </MudText>
+                        </MudItem>
+
+                    </MudCardContent>
+
+                </MudCard>
+            </MudItem>
+        }
+
+    </MudGrid>
+
+}
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        ProductService.ProductsChanged += StateHasChanged;
+    }
+    public void Dispose()
+    {
+        ProductService.ProductsChanged -= StateHasChanged;
+    }
+
+    private string GetPriceText(Product product)
+    {
+        var variants = product.Variants;
+        if (variants.Count == 0)
+        {
+            return string.Empty;
+        }
+        else if (variants.Count == 1)
+        {
+            return $"{variants[0].Price}€";
+        }
+        decimal minPrice = variants.Min(v => v.Price);
+        return $"Desde {minPrice}€";
+
+    }
+}

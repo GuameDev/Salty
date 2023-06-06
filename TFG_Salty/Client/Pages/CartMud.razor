@@ -1,4 +1,4 @@
-﻿@page "/test-cart"
+﻿@page "/cart"
 @inject ICartService CartService
 @inject IOrderService OrderService
 @inject IAuthService AuthService
@@ -15,39 +15,88 @@
 
 else
 {
+
+    <MudGrid Spacing="2" Justify="Justify.Center">
+
+
         @foreach (var product in cartProducts)
         {
-            <MudCard>
-                <MudItem>
-                    <MudImage Src="@product.ImageUrl"></MudImage>
-                </MudItem>
-                <MudItem>
-                    <MudText Typo="Typo.h3"> <a href="/product/@product.ProductId">@product.Title</a> </MudText>
-                    <MudText Typo="Typo.h3">@product.ProductType</MudText>
-                    <MudButton Icon="@Icons.Material.Filled.Logout"
-                       Color=Color.Error @OnClick="@(()=> RemoveProductFromCart(product.ProductId,product.ProductTypeId))">Borrar producto</MudButton>
-                    <MudNumericField @bind-Value="@product.Quantity" Label="Standard" Variant="Variant.Text" Min="0" Max="10"></MudNumericField>
-                </MudItem>
-                <MudItem>
-                    <MudText Typo="Typo.h3"> @(product.Price * product.Quantity)€ </MudText>
-                </MudItem>
+            <MudItem xl="12" xs="12">
 
-            </MudCard>
+
+                <MudCard Outlined=true Class="pa-4 mr-16">
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h4"> <a href="/product/@product.ProductId">@product.Title</a> </MudText>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudItem>
+                            <MudImage Src="@product.ImageUrl"></MudImage>
+                        </MudItem>
+                        <MudItem>
+
+                            <MudText Typo="Typo.h5">@product.ProductType</MudText>
+                            <MudNumericField Class="d-flex justify-start flex-grow-1 gap-4" @bind-Value="@product.Quantity" Label="Cantidad" Variant="Variant.Text" Min="1" Max="10"></MudNumericField>
+                        </MudItem>
+
+                        <MudItem>
+                            <MudText Typo="Typo.h5"> @(product.Price * product.Quantity)€ </MudText>
+                        </MudItem>
+
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Icon="@Icons.Material.Filled.Logout"
+                           Color=Color.Error
+                           Variant="Variant.Filled"
+                           OnClick="@(()=> RemoveProductFromCart(product.ProductId,product.ProductTypeId))">Borrar producto</MudButton>
+
+                    </MudCardActions>
+
+
+
+                </MudCard>
+            </MudItem>
         }
-        <MudItem>
-            <MudText Typo="Typo.h3"> Total (@cartProducts.Count): @cartProducts.Sum(product => @product.Price*product.Quantity)€</MudText>
-        </MudItem>
 
     @if (isUserAuthenticated)
     {
-        <MudItem>
-            <MudText Typo="Typo.h5">Dirección de envío</MudText>
-         
-            <AddressForm></AddressForm>
+        <MudItem xl="12" xs="12">
+
+
+            <MudCard>
+                <MudCardHeader>
+                    <MudText Typo="Typo.h5">Dirección de envío</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <AddressForm></AddressForm>
+                </MudCardContent>
+
+                
+            </MudCard>
+
         </MudItem>
     }
-    
-    <MudButton ButtonType="ButtonType.Button" @OnClick="PlaceOrder"> Realizar pedidos</MudButton>
+
+        <MudItem xl="12" xs="12">
+        <MudCard>
+            <MudCardHeader>
+
+                <MudItem>
+                    <MudText Typo="Typo.h3"> Total (@cartProducts.Count): @cartProducts.Sum(product => @product.Price*product.Quantity)€</MudText>
+                </MudItem>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudButton ButtonType="ButtonType.Button"
+                       Color=Color.Success
+                       Variant="Variant.Filled"
+                       OnClick="PlaceOrder"> Realizar pedidos</MudButton>
+            </MudCardContent>
+        </MudCard>
+       
+
+    </MudItem>
+
+
+    </MudGrid>
 }
 
 
